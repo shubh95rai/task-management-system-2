@@ -8,9 +8,11 @@ import AvatarGroup from "../../components/AvatarGroup";
 import { LuSquareArrowOutUpRight } from "react-icons/lu";
 import { UserContext } from "../../context/userContext";
 import Loader from "../../components/Loader";
+import { CgSpinner } from "react-icons/cg";
 
 export default function ViewTaskDetails() {
   const { loading, setLoading } = useContext(UserContext);
+  const [updatingChecklistId, setUpdatingChecklistId] = useState(null);
 
   const { id } = useParams();
 
@@ -56,6 +58,7 @@ export default function ViewTaskDetails() {
       todoChecklist[index].completed = !todoChecklist[index].completed;
     }
 
+    setUpdatingChecklistId(index);
     try {
       const response = await axiosInstance.put(
         API_PATHS.TASKS.UPDATE_TASK_CHECKLIST(taskId),
@@ -76,6 +79,8 @@ export default function ViewTaskDetails() {
       todoChecklist[index].completed = !todoChecklist[index].completed;
 
       toast.error(error.response.data.message);
+    } finally {
+      setUpdatingChecklistId(null);
     }
   }
 
@@ -167,6 +172,7 @@ export default function ViewTaskDetails() {
                       text={item.text}
                       isChecked={item?.completed}
                       onChange={() => updateTodoChecklist(index)}
+                      todoUpdateLoading={updatingChecklistId === index}
                     />
                   ))}
                 </div>
@@ -208,7 +214,7 @@ function InfoBox({ label, value }) {
   );
 }
 
-function TodoChecklist({ text, isChecked, onChange }) {
+function TodoChecklist({ text, isChecked, onChange, todoUpdateLoading }) {
   return (
     <div
       className="flex items-center gap-3 p-3
@@ -221,6 +227,11 @@ function TodoChecklist({ text, isChecked, onChange }) {
         className="size-4 text-primary bg-gray-100 border-gray-300 rounded-sm outline-none cursor-pointer"
       />
       <p className="text-sm text-gray-800">{text}</p>
+
+      {/* loader */}
+      {todoUpdateLoading && (
+        <CgSpinner className="animate-spin text-primary" size={20} />
+      )}
     </div>
   );
 }
