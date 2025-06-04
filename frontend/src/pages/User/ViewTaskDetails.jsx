@@ -50,7 +50,7 @@ export default function ViewTaskDetails() {
   }
 
   // update todo checklist
-  async function updateTodoChecklist(index) {
+  async function updateTodoChecklist(index, todoId) {
     const todoChecklist = [...task?.todoChecklist];
     const taskId = id;
 
@@ -58,7 +58,7 @@ export default function ViewTaskDetails() {
       todoChecklist[index].completed = !todoChecklist[index].completed;
     }
 
-    setUpdatingChecklistId(index);
+    setUpdatingChecklistId(todoId);
     try {
       const response = await axiosInstance.put(
         API_PATHS.TASKS.UPDATE_TASK_CHECKLIST(taskId),
@@ -171,9 +171,9 @@ export default function ViewTaskDetails() {
                       key={`todo ${index}`}
                       text={item.text}
                       isChecked={item?.completed}
-                      onChange={() => updateTodoChecklist(index)}
+                      onChange={() => updateTodoChecklist(index, item._id)}
                       updatingChecklistId={updatingChecklistId}
-                      todoUpdateLoading={updatingChecklistId === index}
+                      todoUpdateLoading={updatingChecklistId === item._id}
                     />
                   ))}
                 </div>
