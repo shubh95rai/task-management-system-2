@@ -172,6 +172,7 @@ export default function ViewTaskDetails() {
                       text={item.text}
                       isChecked={item?.completed}
                       onChange={() => updateTodoChecklist(index)}
+                      updatingChecklistId={updatingChecklistId}
                       todoUpdateLoading={updatingChecklistId === index}
                     />
                   ))}
@@ -214,7 +215,13 @@ function InfoBox({ label, value }) {
   );
 }
 
-function TodoChecklist({ text, isChecked, onChange, todoUpdateLoading }) {
+function TodoChecklist({
+  text,
+  isChecked,
+  onChange,
+  todoUpdateLoading,
+  updatingChecklistId,
+}) {
   return (
     <div
       className="flex items-center gap-3 p-3
@@ -225,6 +232,7 @@ function TodoChecklist({ text, isChecked, onChange, todoUpdateLoading }) {
         checked={isChecked}
         onChange={onChange}
         className="size-4 text-primary bg-gray-100 border-gray-300 rounded-sm outline-none cursor-pointer"
+        disabled={!!updatingChecklistId}
       />
       <p className="text-sm text-gray-800">{text}</p>
 
